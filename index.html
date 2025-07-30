@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة مافيوسو</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Reem+Kufi&display=swap');
+        
+        * {
+            font-family: 'Reem Kufi', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            color: #4CAF50;
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+            margin-bottom: 10px;
+        }
+        
+        .top-secret {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ff0000;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        
+        /* الصفحة الرئيسية */
+        .home-page {
+            text-align: center;
+        }
+        
+        .cases-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .case-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(76, 175, 80, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border-color: #4CAF50;
+        }
+        
+        .case-card h3 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+        
+        .case-card p {
+            color: #ddd;
+            font-size: 0.9rem;
+        }
+        
+        /* صفحة إدخال الأسماء */
+        .names-page, .role-page, .boss-page, .solution-page {
+            display: none;
+            text-align: center;
+        }
+        
+        .names-input {
+            margin-top: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #4CAF50;
+        }
+        
+        .input-group input {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-align: center;
+        }
+        
+        .btn {
+            background-color: #4CAF50;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+        
+        /* صفحة الأدوار */
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .card {
+            width: 150px;
+            height: 200px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        
+        .card-front {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            border: 3px solid white;
+        }
+        
+        .card-front::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+        }
+        
+        .card-front h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .card-back {
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+            color: #333;
+            transform: rotateY(180deg);
+            border: 3px solid #4CAF50;
+        }
+        
+        .card-back h3 {
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+        
+        .card-back p {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .mafioso {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        /* صفحة البوس */
+        .clues-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .clue-card {
+            width: 200px;
+            height: 250px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        
+        .clue-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .clue-card.flipped .clue-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .clue-card-front, .clue-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+        
+        .clue-card-front {
+            background: linear-gradient(135deg, #FF5722, #E64A19);
+            color: white;
+            border: 3px solid white;
+        }
+        
+        .clue-card-front h3 {
+            font-size: 1.5rem;
+        }
+        
+        .clue-card-back {
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+            color: #333;
+            transform: rotateY(180deg);
+            border: 3px solid #FF5722;
+            text-align: right;
+            overflow-y: auto;
+        }
+        
+        /* صفحة الحل */
+        .case-file {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 800px;
+            text-align: right;
+            position: relative;
+            border: 2px solid rgba(76, 175, 80, 0.5);
+        }
+        
+        .case-file h2 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(76, 175, 80, 0.5);
+            padding-bottom: 10px;
+        }
+        
+        .case-file p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .stamp {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            opacity: 0;
+            font-size: 5rem;
+            color: red;
+            font-weight: bold;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+        
+        .stamp.show {
+            opacity: 0.7;
+        }
+        
+        /* تأثيرات الحركة */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- الصفحة الرئيسية -->
+        <div class="home-page">
+            <header>
+                <div class="top-secret">TOP SECRET</div>
+                <div class="logo">مافيوسو</div>
+                <p>اختر قضية لبدء اللعبة</p>
+            </header>
+            
+            <div class="cases-container" id="casesContainer">
+                <!-- سيتم ملؤها بالقصص من الجافاسكريبت -->
+            </div>
+        </div>
+        
+        <!-- صفحة إدخال الأسماء -->
+        <div class="names-page">
+            <header>
+                <div class="logo">مافيوسو</div>
+                <h2 id="caseTitle"></h2>
+                <p>أدخل أسماء اللاعبين (5-6 لاعبين)</p>
+            </header>
+            
+            <div class="names-input">
+                <div class="input-group">
+                    <label for="player1">اللاعب 1</label>
+                    <input type="text" id="player1" required>
+                </div>
+                <div class="input-group">
+                    <label for="player2">اللاعب 2</label>
+                    <input type="text" id="player2" required>
+                </div>
+                <div class="input-group">
+                    <label for="player3">اللاعب 3</label>
+                    <input type="text" id="player3" required>
+                </div>
+                <div class="input-group">
+                    <label for="player4">اللاعب 4</label>
+                    <input type="text" id="player4" required>
+                </div>
+                <div class="input-group">
+                    <label for="player5">اللاعب 5</label>
+                    <input type="text" id="player5">
+                </div>
+                <div class="input-group">
+                    <label for="player6">اللاعب 6</label>
+                    <input type="text" id="player6">
+                </div>
+                
+                <button class="btn" id="startGameBtn">ابدأ اللعبة</button>
+            </div>
+        </div>
+        
+        <!-- صفحة الأدوار -->
+        <div class="role-page">
+            <header>
+                <div class="logo">مافيوسو</div>
+                <h2 id="currentPlayerName"></h2>
+                <p>اضغط على الكارت لمعرفة دورك</p>
+            </header>
+            
+            <div class="cards-container">
+                <div class="card" id="roleCard">
+                    <div class="card-inner">
+                        <div class="card-front floating">
+                            <h3>مافيوسو</h3>
+                            <p>اضغط لقلب الكارت</p>
+                        </div>
+                        <div class="card-back">
+                            <h3 id="roleTitle"></h3>
+                            <p id="roleDescription"></p>
+                            <p id="mafiosoTag" class="mafioso"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn" id="nextPlayerBtn" style="display: none;">التالي</button>
+        </div>
+        
+        <!-- صفحة البوس -->
+        <div class="boss-page">
+            <header>
+                <div class="logo">مافيوسو</div>
+                <h2>زعيم المافيا</h2>
+                <p>اضغط على الكروت لرؤية الأدلة</p>
+            </header>
+            
+            <div class="clues-container" id="cluesContainer">
+                <!-- سيتم ملؤها بالأدلة من الجافاسكريبت -->
+            </div>
+            
+            <button class="btn" id="solveCaseBtn" style="display: none;">حل القضية</button>
+        </div>
+        
+        <!-- صفحة الحل -->
+        <div class="solution-page">
+            <header>
+                <div class="logo">مافيوسو</div>
+                <h2>حل القضية</h2>
+            </header>
+            
+            <div class="case-file">
+                <h2 id="solutionTitle"></h2>
+                <div id="solutionContent"></div>
+                <div class="stamp" id="stamp">اتُحِلَّتْ</div>
+            </div>
+            
+            <button class="btn" id="backToHomeBtn">العودة للصفحة الرئيسية</button>
+        </div>
+    </div>
+
+    <script>
+       const cases = [
+    {
+        id: 1,
+        title: "جريمة الفندق الفاخر",
+        description: "في فندق 'الضيافة الملكية' الفاخر، تم العثور على المليونير الشهير 'أحمد الدسوقي' مقتولاً في جناحه الخاص. الجريمة حدثت ليلاً والأبواب كانت مقفلة من الداخل والنوافذ محكمة الإغلاق.",
+        roles: [
+            "الدكتور وليد - الطبيب الشخصي للضحية، كان يعالج الضحية من مرض قلبي مزمن",
+            "سناء - نادلة الفندق، كانت تقدم مشروبات للضحية قبل ساعة من اكتشاف الجريمة",
+            "محمود - حارس الأمن الليلي، كان في نوبته عند وقوع الجريمة",
+            "كريم - مدير الفندق، كان لديه خلافات مالية مع الضحية",
+            "عبد الرحمن - خادم الغرف، لديه مفتاح لكل الأجنحة",
+            "سارة - مديرة العلاقات العامة بالفندق، كانت تخطط لحفل خاص للضحية"
+        ],
+        clues: [
+            "بصمة دموية على مقبض الباب الداخلي لا تطابق أي من الحاضرين",
+            "زجاجة نبيذ نادرة تحتوي على آثار سم الزرنيخ",
+            "تسجيل كاميرات الأمن للطابق تم مسحه قبل 10 دقائق من الجريمة",
+            "ساعة يد ثمينة مفقودة من معصم الضحية"
+        ],
+        solution: `المدير 'كريم' هو القاتل. لقد خطط للجريمة بعناية حيث:
+1. استغل معرفته بنظام أمان الفندق لتعطيل الكاميرات قبل 10 دقائق من الجريمة.
+2. استخدم مفتاحه الخاص لدخول الجناح بينما كان الضحية نائماً.
+3. وضع السم في زجاجة النبيذ المفضلة للضحية والتي كان يعلم أنها سيشربها قبل النوم.
+4. سرق الساعة الثمينة ليجعل الجريمة تبدو كسرقة انتهت بقتل.
+الدافع: كان الضحية على وشك كشف تلاعبات مالية قام بها المدير في حسابات الفندق.`
+    },
+    {
+        id: 2,
+        title: "سرقة المتحف الكبرى",
+        description: "في ليلة افتتاح المعرض العالمي، اختفت لوحة 'الفتاة ذات القرط اللؤلؤي' من المتحف الوطني. اللوحة التي تقدر قيمتها بعشرة ملايين دولار سرقت رغم نظام الأمن المتطور.",
+        roles: [
+            "فاروق - حارس المتحف الليلي، كان في نوبته أثناء السرقة",
+            "د. نادية - خبيرة أنظمة الأمن، قامت بتركيب نظام الإنذار الجديد",
+            "خالد - ناقد فني شهير، كان ينتقد اللوحة علناً",
+            "منى - فنانة ترميم، كانت تعمل على ترميم اللوحة",
+            "ياسر - مرشد سياحي، يعرف المتحف ومخارجه السرية جيداً",
+            "زياد - فني إضاءة في المتحف، كان مسؤولًا عن نظام الإضاءة الليلي"
+        ],
+        clues: [
+            "قطعة قماش من زي حراس المتحف وجدت عند النافذة المكسورة",
+            "رسالة غامضة على جهاز الحارس عن تعطيل النظام",
+            "أداة ترميم خاصة مفقودة من صندوق الفنانة",
+            "نسخة مطابقة للوحة الأصلية في مرسم الفنانة"
+        ],
+        solution: `الفنانة 'منى' هي التي قامت بالسرقة. طريقة ارتكاب الجريمة:
+1. خلال أيام الترميم السابقة، صنعت نسخة متماثلة تماماً للوحة الأصلية.
+2. في ليلة الحادث، استغلت وجودها القانوني في المتحف بعد ساعات العمل.
+3. عطلت نظام الإنذار باستخدام معرفتها الفنية بالنظام.
+4. استبدلت اللوحة الأصلية بالنسخة المقلدة التي صنعتها.
+5. كسرت النافذة ليبعد الشك عنها ويوهم الجميع أن السارق جاء من الخارج.
+الدافع: كانت تعاني من ضائقة مالية كبيرة وتريد بيع اللوحة في السوق السوداء.`
+    },
+    {
+        id: 3,
+        title: "لغز جزيرة الموت",
+        description: "في جزيرة نائية بوسط المحيط، تم العثور على رجل الأعمال 'هشام علام' ميتاً في كوخه الخاص. العاصفة الشديدة منعت أي شخص من الدخول أو الخروج من الجزيرة لمدة 48 ساعة.",
+        roles: [
+            "داليا - زوجة الضحية، كانت معه في الكوخ",
+            "د. عماد - الطبيب الشخصي، كان يعالج الضحية من مرض قلبي",
+            "شادي - طباخ العائلة، أعد العشاء الأخير للضحية",
+            "نرمين - السكرتيرة الشخصية، كانت تدير أعمال الضحية",
+            "محمود - خادم الكوخ، كان يعتني باحتياجات الضحية وزوجته",
+            "رانيا - ممرضة خاصة، كانت تُراقب حالة الضحية ليلاً"
+        ],
+        clues: [
+            "حقنة وجدت تحت السرير تحتوي على آثار مادة سامة",
+            "وصفة طبية بها جرعة دواء مضاعفة موقعة من الطبيب",
+            "رسالة تهديد في جيب معطف الضحية",
+            "باب خلفي للكوخ كان مفتوحاً رغم العاصفة"
+        ],
+        solution: `الطبيب 'عماد' هو القاتل. خطوات الجريمة:
+1. كتب وصفة طبية بجرعة مضاعفة من الدواء لجعل الضحية يشعر بتعب شديد.
+2. عندما ذهب لفحصه، أعطاه حقنة الديجيتالين القاتلة تحت ذريعة أنها دواء منشط للقلب.
+3. وضع رسالة التهديد في جيب معطف الضحية ليبعد الشك نحو الطباخ 'شادي'.
+4. استخدم الباب الخلفي للهروب سريعاً بعد الجريمة.
+الدافع: كان الضحية على وشك تغيير وصيته لصالح زوجته 'داليا'، مما يعني فقدان 'عماد' لمكانته كطبيب خاص ومدير لأموال الضحية.`
+    },
+    {
+        id: 4,
+        title: "جريمة القطار السريع",
+        description: "في رحلة قطار الشرق السريع الفاخرة بين إسطنبول وباريس، تم العثور على الدبلوماسي 'أركان باشا' مقتولاً في مقصورته الخاصة. جميع الركاب كانوا في عرباتهم عند وقوع الجريمة.",
+        roles: [
+            "ليلى - زوجة الضحية، كانت تسافر معه",
+            "أيمن - السكرتير الشخصي، كان يحمل وثائق دبلوماسية سرية",
+            "سامي - النادل الرئيسي، كان يخدم في عربة الضحية",
+            "عقيد نبيل - ضابط مخابرات متقاعد، كان مسافراً في نفس القطار",
+            "كابتن عمر - سائق القطار، كان يتحكم في القطار طوال الرحلة",
+            "نادين - ممرضة القطار، تقدم خدمات طبية للركاب"
+        ],
+        clues: [
+            "ساعة الضحية الفاخرة توقفت عند الساعة 2:33 صباحاً",
+            "زجاجة كونياك مكسورة تحتوي على آثار سم الريسين",
+            "مفتاح مقصورة إضافي مفقود من حقيبة النادل",
+            "رسالة غامضة في جيب الضحية تشير إلى 'اجتماع منتصف الليل'"
+        ],
+        solution: `النادل 'سامي' هو القاتل. تفاصيل الجريمة:
+1. استغل معرفته بعادات الضحية في الشرب ليلاً.
+2. وضع السم في زجاجة الكونياك المفضلة للضحية.
+3. استخدم المفتاح الإضافي لدخول المقصورة بينما كان الضحية نائماً.
+4. نظف الأدلة بعناية لكنه نسي أن ساعة الضحية توقفت عند سقوطها أثناء صراعه الأخير.
+الدافع: كان يعمل لصالح جهة مخابراتية تريد منع تسريب الوثائق الدبلوماسية التي كان يحملها الضحية.`
+    },
+    {
+        id: 5,
+        title: "مأساة حفل الزفاف",
+        description: "في حفل زفاف 'نورا' و'ياسر' الفاخر، انهار العريس ميتاً بعد لحظات من شربه نخب الزفاف. التحقيق الأولي كشف عن تسمم بالسيانيد في كأسه.",
+        roles: [
+            "نورا - العروس، كانت بجوار العريس عند الانهيار",
+            "كريم - أفضل أصدقاء العريس، كان يكره 'ياسر' سراً",
+            "مازن - النادل الرئيسي، كان يقدم المشروبات للحضور",
+            "هناء - طباخة الحفل، أعدت كل المأكولات",
+            "سهام - والدة العروس، كانت تعارض الزواج منذ البداية",
+            "طارق - مصور الحفل، كان يتحرك بين الضيوف"
+        ],
+        clues: [
+            "كأس العريس كان مختلفاً عن الآخرين، وهو عادة كان يصر عليها",
+            "زجاجة الشمبانيا الرئيسية تحتوي على آثار سيانيد البوتاسيوم",
+            "صورة تظهر شخصاً يضع شيئاً في كأس العريس",
+            "رسالة حب قديمة في حقيبة 'نورا' موجهة إلى 'كريم'"
+        ],
+        solution: `'كريم' أفضل صديق العريس هو القاتل. طريقة التنفيذ:
+1. استغل معرفته بعادة العريس في استخدام كأس خاص به.
+2. أثناء الفوضى التي سببتها والدة العروس عمداً، وضع السم في الكأس.
+3. حاول توجيه الشك للنادل 'مازن' بترك زجاجة الشمبانيا المسمومة جزئياً.
+4. لكن التحقيق كشف أن السم كان في الكأس فقط وليس في الزجاجة.
+الدافع: كان يحب العروس 'نورا' سراً وكانت بينهما علاقة قديمة قبل خطوبتها من العريس.`
+    }
+,
+    {
+        id: 6,
+        title: "لغز المهرجان الموسيقي",
+        description: "في الليلة الأخيرة من مهرجان 'صوت المدينة' الموسيقي، وُجد منسق الموسيقى الشهير 'DJ عصام' ميتًا داخل الكواليس قبل دقائق من عرضه.",
+        roles: [
+            "نهى - مغنية مشهورة، كانت تشارك في نفس الحفل وتنافس DJ عصام",
+            "حسام - مهندس الصوت، كان المسؤول عن تجهيز المعدات",
+            "ليلى - منظمة الحفل، كانت تتعامل مع الترتيبات اللوجستية",
+            "خالد - أحد أفراد الأمن، شوهد يدخل الكواليس قبل الحادث مباشرة",
+            "مي - معجبة متطرفة، كانت تلاحق DJ عصام دائمًا",
+            "جمال - مدير أعمال الضحية، كان غاضبًا من خلاف مالي معه"
+        ],
+        clues: [
+            "مكبر صوت مفكك وبه أسلاك مقطوعة عمدًا",
+            "بصمات على حقيبة المعدات لا تعود للضحية",
+            "رسالة تهديد مكتوبة بخط اليد عُثر عليها في غرفة الملابس",
+            "كاميرا مراقبة تعطلت فجأة قبل وقوع الحادث",
+            "مفتاح باب الكواليس وُجد في مرحاض السيدات",
+            "سماعة DJ محترقة جزئيًا من الداخل"
+        ],
+        solution: `مدير الأعمال 'جمال' هو القاتل. خطوات الجريمة:
+
+1. تعمد تعطيل كاميرا المراقبة حتى لا يتم تصويره.
+2. دخل إلى الكواليس أثناء الفوضى الخاصة بالتجهيزات.
+3. قطع أسلاك السماعة ليُحدث صدمة كهربائية أثناء تشغيلها.
+4. ترك بصماته على حقيبة المعدات بعد إخراج أداة حادة منها.
+5. أخفى المفتاح في مكان يصعب إيجاده، لكن الشرطة عثرت عليه في الحمام.
+
+الدافع: خلاف مالي كبير بين جمال وDJ عصام حول أرباح الحفل النهائي.`
+    },
+
+    {
+        id: 7,
+        title: "مأساة المسرح الكبير",
+        description: "أثناء عرض مسرحي ضخم في المسرح الوطني، سقط النجم المسرحي 'فؤاد نصار' من أعلى المسرح ومات على الفور. التحقيقات تشير إلى أن الحادث لم يكن عرضيًا.",
+        roles: [
+            "رانيا - ممثلة مشاركة، كانت تغار من دور الضحية الرئيسي",
+            "أكرم - المخرج المسرحي، كان تحت ضغط كبير من فؤاد",
+            "سالي - خبيرة الأزياء، كانت في مكان سقوط الجثة",
+            "رامي - فني الإضاءة، كان يضبط الكشافات في الأعلى",
+            "مروان - المسؤول عن الحبال والتجهيزات الميكانيكية",
+            "هيثم - كاتب النص، كان غير راضٍ عن أداء فؤاد للدور"
+        ],
+        clues: [
+            "حبل السلامة مقطوع بسكين حاد",
+            "أداة قطع وُجدت مخبأة خلف الستار",
+            "صوت مشادة تم تسجيله قبل دقائق من الحادث",
+            "رسالة بخط الضحية يتهم فيها شخصًا بتهديده",
+            "آثار بصمات على أدوات الإضاءة تشير إلى صعود شخص غير فني",
+            "مكالمات هاتفية بين المخرج والمشتبه به الرئيسي"
+        ],
+        solution: `المخرج 'أكرم' هو القاتل. تسلسل الأحداث:
+
+1. خطط لإزاحة فؤاد بسبب ضغطه المستمر وتدخله في كل صغيرة وكبيرة بالعرض.
+2. استغل خبرته بالمسرح، وقطع حبل السلامة خلال الاستراحة قبل العرض.
+3. أقنع الفني رامي بمغادرة مكانه لدقائق لينفذ خطته دون شهود.
+4. ترك أداة القطع خلف الستار وتظاهر بالصدمة أثناء الحادث.
+5. الرسالة المكتوبة من فؤاد كانت بمثابة التحذير الأخير، لكن لم يُنتبه لها.
+
+الدافع: كان أكرم على وشك فقدان وظيفته بسبب شكاوى فؤاد للإدارة.`  
+    }
+];
+
+        // متغيرات اللعبة
+        let currentCase = null;
+        let players = [];
+        let currentPlayerIndex = 0;
+        let mafiosoIndex = 0;
+        let revealedClues = 0;
+        let usedRoles = []; // لتتبع الأدوار المستخدمة لمنع التكرار
+
+        // عناصر DOM
+        const homePage = document.querySelector('.home-page');
+        const namesPage = document.querySelector('.names-page');
+        const rolePage = document.querySelector('.role-page');
+        const bossPage = document.querySelector('.boss-page');
+        const solutionPage = document.querySelector('.solution-page');
+        const casesContainer = document.getElementById('casesContainer');
+        const caseTitle = document.getElementById('caseTitle');
+        const currentPlayerName = document.getElementById('currentPlayerName');
+        const roleTitle = document.getElementById('roleTitle');
+        const roleDescription = document.getElementById('roleDescription');
+        const mafiosoTag = document.getElementById('mafiosoTag');
+        const roleCard = document.getElementById('roleCard');
+        const nextPlayerBtn = document.getElementById('nextPlayerBtn');
+        const cluesContainer = document.getElementById('cluesContainer');
+        const solveCaseBtn = document.getElementById('solveCaseBtn');
+        const solutionTitle = document.getElementById('solutionTitle');
+        const solutionContent = document.getElementById('solutionContent');
+        const stamp = document.getElementById('stamp');
+        const backToHomeBtn = document.getElementById('backToHomeBtn');
+        const startGameBtn = document.getElementById('startGameBtn');
+
+        // تهيئة اللعبة
+        function initGame() {
+            // عرض القصص
+            casesContainer.innerHTML = '';
+            cases.forEach(caseItem => {
+                const caseCard = document.createElement('div');
+                caseCard.className = 'case-card';
+                caseCard.innerHTML = `
+                    <h3>${caseItem.title}</h3>
+                    <p>${caseItem.description}</p>
+                `;
+                caseCard.addEventListener('click', () => selectCase(caseItem));
+                casesContainer.appendChild(caseCard);
+            });
+        }
+
+        // اختيار قضية
+        function selectCase(caseItem) {
+            currentCase = caseItem;
+            caseTitle.textContent = caseItem.title;
+            homePage.style.display = 'none';
+            namesPage.style.display = 'block';
+            usedRoles = []; // إعادة تعيين الأدوار المستخدمة عند بدء قضية جديدة
+        }
+
+        // بدء اللعبة
+        startGameBtn.addEventListener('click', () => {
+            players = [];
+            for (let i = 1; i <= 6; i++) {
+                const playerInput = document.getElementById(`player${i}`);
+                if (playerInput.value.trim() !== '') {
+                    players.push(playerInput.value.trim());
+                }
+            }
+            
+            if (players.length < 5) {
+                alert('يجب إدخال 5 لاعبين على الأقل');
+                return;
+            }
+            
+            // اختيار المافيوسو عشوائياً
+            mafiosoIndex = Math.floor(Math.random() * players.length);
+            
+            namesPage.style.display = 'none';
+            showPlayerRole();
+        });
+
+        // الحصول على دور عشوائي غير مكرر
+        function getRandomRole() {
+            const availableRoles = currentCase.roles.filter(role => !usedRoles.includes(role));
+            
+            if (availableRoles.length === 0) {
+                // إذا استخدمنا كل الأدوار، نعيد تعيين القائمة
+                usedRoles = [];
+                return currentCase.roles[Math.floor(Math.random() * currentCase.roles.length)];
+            }
+            
+            const randomIndex = Math.floor(Math.random() * availableRoles.length);
+            const selectedRole = availableRoles[randomIndex];
+            usedRoles.push(selectedRole);
+            return selectedRole;
+        }
+
+        // عرض دور اللاعب
+        function showPlayerRole() {
+            currentPlayerName.textContent = players[currentPlayerIndex];
+            
+            const role = getRandomRole();
+            const roleParts = role.split(' - ');
+            
+            roleTitle.textContent = roleParts[0];
+            roleDescription.textContent = roleParts[1];
+            
+            if (currentPlayerIndex === mafiosoIndex) {
+                mafiosoTag.textContent = '"مافيوسو"';
+            } else {
+                mafiosoTag.textContent = '';
+            }
+            
+            roleCard.classList.remove('flipped');
+            nextPlayerBtn.style.display = 'none';
+            rolePage.style.display = 'block';
+        }
+
+        // قلب الكارت
+        roleCard.addEventListener('click', () => {
+            roleCard.classList.add('flipped');
+            nextPlayerBtn.style.display = 'block';
+        });
+
+        // اللاعب التالي
+        nextPlayerBtn.addEventListener('click', () => {
+            currentPlayerIndex++;
+            if (currentPlayerIndex < players.length) {
+                showPlayerRole();
+            } else {
+                // عرض صفحة البوس
+                rolePage.style.display = 'none';
+                showBossPage();
+            }
+        });
+
+        // عرض صفحة البوس
+        function showBossPage() {
+            cluesContainer.innerHTML = '';
+            currentCase.clues.forEach((clue, index) => {
+                const clueCard = document.createElement('div');
+                clueCard.className = 'clue-card';
+                clueCard.innerHTML = `
+                    <div class="clue-card-inner">
+                        <div class="clue-card-front floating">
+                            <h3>دليل</h3>
+                        </div>
+                        <div class="clue-card-back">
+                            <p>${clue}</p>
+                        </div>
+                    </div>
+                `;
+                clueCard.addEventListener('click', () => revealClue(clueCard));
+                cluesContainer.appendChild(clueCard);
+            });
+            
+            revealedClues = 0;
+            solveCaseBtn.style.display = 'none';
+            bossPage.style.display = 'block';
+        }
+
+        // كشف دليل
+        function revealClue(clueCard) {
+            if (!clueCard.classList.contains('flipped')) {
+                clueCard.classList.add('flipped');
+                revealedClues++;
+                
+                if (revealedClues === currentCase.clues.length) {
+                    solveCaseBtn.style.display = 'block';
+                }
+            }
+        }
+
+        // حل القضية
+        solveCaseBtn.addEventListener('click', () => {
+            bossPage.style.display = 'none';
+            showSolution();
+        });
+
+        // عرض الحل
+        function showSolution() {
+            solutionTitle.textContent = currentCase.title;
+            solutionContent.innerHTML = `
+                <h3>كيف تمت الجريمة؟</h3>
+                <p>${currentCase.solution}</p>
+                <h3 style="margin-top: 20px;">القاتل هو: ${players[mafiosoIndex]}</h3>
+            `;
+            
+            solutionPage.style.display = 'block';
+            
+            // عرض الختم بعد ثانية
+            setTimeout(() => {
+                stamp.classList.add('show');
+            }, 1000);
+        }
+
+        // العودة للصفحة الرئيسية
+        backToHomeBtn.addEventListener('click', () => {
+            solutionPage.style.display = 'none';
+            homePage.style.display = 'block';
+            currentPlayerIndex = 0;
+            initGame();
+        });
+
+        // بدء اللعبة عند تحميل الصفحة
+        window.addEventListener('load', initGame);
+    </script>
+</body>
+</html>
